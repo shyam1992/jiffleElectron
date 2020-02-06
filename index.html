@@ -3,17 +3,199 @@
   <head>
     <meta charset="UTF-8">
     <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
-    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">
-    <title>Hello World!</title>
+    <meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' http://* 'unsafe-inline'; script-src 'self' http://* 'unsafe-inline' 'unsafe-eval'; style-src-elem 'self' http://* 'unsafe-inline'; img-src * 'self' data: https:; "/>
+
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.css"></link>
+    <link rel="stylesheet" type="text/css" href="./app.css"></link>
+    <link rel="stylesheet" type="text/css" href="./jquery.schedule.min.css"></link>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <title>Jifflenow</title>
   </head>
   <body>
-    <h1>Hello World!</h1>
-    We are using Node.js <span id="node-version"></span>,
-    Chromium <span id="chrome-version"></span>,
-    and Electron <span id="electron-version"></span>.
+    <section id="navigation">
+      <nav class="navbar navbar-fixed-top navbar-jiffle" role="navigation">
+        <div class="container-fluid">
+          <!-- Brand and toggle get grouped for better mobile display -->
+          <div class="navbar-header">
+            <a class="navbar-brand" href="#" id="gotohome"><img alt="Header Logo" src="https://static-assets-develop.jntesting.net/assets/header_logoee4954b7968f26d1ccc31aacd0deb758.png"></a>
+          </div>
+          <!-- Collect the nav links, forms, and other content for toggling -->
+          <div class="collapse navbar-collapse" id="main-nav-bar">
+            <ul class="nav navbar-nav navbar-right">
+              <li class=""><a href="#"></a></li>
+                <li><a rel="nofollow" data-method="delete" href="/csm_logout">Signout</a></li>
+            </ul>
+
+          </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+      </nav>
+    </section>
+
+    <section id="company" class="company">
+      <div class="card companyCard">
+        <div class="card-header companyCardHeader">
+          <a href="#" id="companyNameBtn">
+           <div class="card-header-content">
+              <div class="card-click">
+                    <span class="font-lg two-line-ellipsis">Logan</span>
+              </div>
+           </div>
+          </a>
+        </div>
+        <div class="card-content">
+        </div>
+      </div>
+    </section>
+
+    <section id="event" class="hide" style="padding: 50px">
+      <div class="card" style="width: 400px;">
+        <img src="https://jifflenow-qa.s3-us-west-1.amazonaws.com/67135f9a-d2c8-4a42-91d5-d29ff34b7948/hackathon/banner.png?t=1580976907063?t=1580994471052" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title">Hackathon</h5>
+          <p class="card-text">Feb 6 - Feb 7, 2020</p>
+            <div class="row">
+              <div class="col-sm">
+                <a href="#" class="btn btn-primary wid100" id="requestMeeting">Request Meeting</a>
+              </div>
+              <div class="col-sm">
+                <a href="#" class="btn btn-primary wid100">Goto</a>
+              </div>
+            </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="bookMeeting" class="hide">
+      <div class="container" style="max-width: 100%;">
+        <div class="row">
+          <div class="col-md-9">
+            <label>Meeting With</label>
+            <input placeholder="meeting with" class="form-control" style="width: 200px;" id="meeting_with"/>
+          </div>
+          <div class="col-md-3">
+            <button class="btn btn-primary" id="submitOnlineMeeting" style="margin: 10px 0;">Submit</button>
+            <button class="btn btn-outline-primary" style="margin: 10px 0;">cancel</button>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-3">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+              <li class="nav-item">
+                <a class="nav-link active" id="internal-tab" data-toggle="tab" href="#internal" role="tab" aria-controls="internal" aria-selected="true">Internal</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" id="external-tab" data-toggle="tab" href="#external" role="tab" aria-controls="external" aria-selected="false">External</a>
+              </li>
+            </ul>
+            <div class="tab-content" id="myTabContent">
+              <div class="tab-pane fade show active" id="internal" role="tabpanel" aria-labelledby="internal-tab" style="padding: 20px 0;">
+                <label>Internal Attendees</label>
+                <select class="js-data-internal-users-ajax" multiple style="width:90%"></select>
+              </div>
+              <div class="tab-pane fade" id="external" role="tabpanel" aria-labelledby="external-tab" style="padding: 20px 0;">
+                <label>External Attendees</label>
+                <select class="js-data-external-users-ajax" multiple style="width:90%"></select>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div id="schedule-demo"></div>
+          </div>
+          <div class="col-sm-3" style="padding: 50px 0;">
+            <label>Rooms</label>
+            <select class="js-data-room-ajax" style="width:90%"></select>
+          </div>
+        </div>
+      </div>
+    </section>
+
+      <!-- confirmationModalSection -->
+    <section id="confirmationModalSection">
+
+      <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="confirmationModalLabel">Make a wise decision</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              Hey, Your network is fluctuating, would you like to create a meeting with offline data and sync it when your connection becomes stable?
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline-primary" data-dismiss="modal">No, I will take the pain</button>
+              <button type="button" class="btn btn-primary" id="confirmshowOffline">Yes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- offlineModal -->
+    <section id="offline">
+      <div class="modal fade" id="offlineModal" tabindex="-1" role="dialog" aria-labelledby="offlineModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="offlineModalLabel">Offline Meeting creation</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="row">
+                <input placeholder="meeting with" class="form-control" style="width: 200px;" id="meeting_with_offline"/>
+              </div>
+              <div class="row">
+                <select class="js-data-internal-users-cache" multiple style="width:90%"></select>
+              </div>
+              <div class="row">
+                <select class="js-data-external-users-cache" multiple style="width:90%"></select>
+              </div>
+              <div class="row">
+                <input id="datepicker" placeholder="Date" class="form-control" style="width: 200px;" />
+              </div>
+              <div class="row">
+                <select id="startTime" placeholder="Start Time" class="form-control" style="width: 200px;" id="start_time_offline"></select>
+              </div>
+              <div class="row">
+                <select id="endTime" placeholder="End Time" class="form-control" style="width: 200px;" id="end_time_offline"></select>
+              </div>
+              <div class="row">
+                <select class="js-data-room-cache" style="width:90%"></select>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline-primary" data-dismiss="modal">cancel</button>
+              <button type="button" class="btn btn-primary" id="storeMeetingData">Submit meeting</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <div id="cover" style="display: none;">
+      <div class="loaders">
+        <div style="display: flex; justify-content: center; align-items: center; width: 100vw; height: 100vh">
+          <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="54" height="54"><style>path{stroke:#fff;stroke-width:2.2}</style><defs><circle id="c" cy="-22.6" r="4.4" fill="#0d9cd7"></circle></defs><g transform="translate(27 27)"><circle r="15" fill="#11171f"></circle><g id="circles" transform="rotate(100.448)"><use xlink:href="#c"></use><use xlink:href="#c" transform="rotate(45)"></use><use xlink:href="#c" transform="rotate(90)"></use><use xlink:href="#c" transform="rotate(135)"></use><use xlink:href="#c" transform="rotate(180)"></use><use xlink:href="#c" transform="rotate(225)"></use><use xlink:href="#c" transform="rotate(270)"></use><use xlink:href="#c" transform="rotate(315)"></use><animateTransform attributeName="transform" dur="10s" type="rotate" from="0" to="360" repeatCount="indefinite"></animateTransform></g><path id="long-hand" d="M0-13V0" transform="rotate(242.502)"><animateTransform attributeName="transform" dur="1.6667s" type="rotate" from="0" to="360" repeatCount="indefinite"></animateTransform></path><path id="short-hand" d="M0-8.5V0" transform="rotate(50.2239)"><animateTransform attributeName="transform" dur="20s" type="rotate" from="0" to="360" repeatCount="indefinite"></animateTransform></path><path stroke-linecap="round" d="M0 0l0 0"></path></g></svg>
+        </div>
+      </div>
+    </div>
 
     <!-- You can also require other files to run in this process -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/js/bootstrap.bundle.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
     <script src="./renderer.js"></script>
+    <script src="./navigation.js"></script>
+    <script src="./utils.js"></script>
+    <script src="jquery.schedule.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+    <script src="./sockets.js"></script>
+    <script src="./api.js"></script>
+    <script src="./offline.js"></script>
   </body>
 </html>

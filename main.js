@@ -1,12 +1,26 @@
 // Modules to control application life and create native browser window
 const {app, BrowserWindow} = require('electron')
 const path = require('path')
+const { ipcMain } = require('electron')
+let fs = require('fs')
+
+ipcMain.on('asynchronous-message', (event, arg) => {
+  console.log(arg)
+  event.reply('asynchronous-reply', 'pong')
+})
+
+ipcMain.on('synchronous-message', (event, arg) => {
+  console.log(arg) // prints "ping"
+  event.returnValue = 'pong'
+})
 
 function createWindow () {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1300,
+    height: 800,
+    title : 'Jifflenow',
+    useContentSize: true,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js')
     }
@@ -39,3 +53,18 @@ app.on('activate', function () {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+
+ipcMain.on('storeData', (event, arg) => {
+  fs.writeFile(`${arg.fileName}.json`, JSON.stringify(arg.data), function (err) {
+    if (err) throw err;
+    event.reply('storeData', `Saved!,${arg.fileName}`)
+  });
+
+})
+
+ipcMain.on('fetchData', (event, arg) => {
+  fs.readFile(`${arg}.json`, 'utf8', function (err, data) {
+    if (err) throw err;
+    event.reply('fetchData', {fileName: arg,data})
+  });
+})
