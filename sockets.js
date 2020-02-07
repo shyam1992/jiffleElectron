@@ -8,6 +8,7 @@ const createSocketConnection = () => {
         console.log('WS connected')
     })
     socket.on('notification', (data) => {
+        ipcRenderer.send('ShowNotificationCount', {})
         new Notification(data.title, {
             body: data.msg
           })

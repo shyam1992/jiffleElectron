@@ -14,6 +14,11 @@ ipcMain.on('synchronous-message', (event, arg) => {
   event.returnValue = 'pong'
 })
 
+ipcMain.on('ShowNotificationCount', (event, arg) => {
+  console.log(app.getBadgeCount())
+  app.setBadgeCount(app.getBadgeCount() + 1)
+})
+
 function createWindow () {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
